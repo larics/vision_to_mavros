@@ -13,6 +13,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "vision_to_mavros");
 
   ros::NodeHandle node;
+  ros::NodeHandle nh_private("~");
   
   //////////////////////////////////////////////////
   // Variables for precision navigation
@@ -38,7 +39,7 @@ int main(int argc, char** argv)
   // Read parameters from launch file, including: target_frame_id, source_frame_id, output_rate
   {
     // The frame in which we find the transform into, the original "world" frame
-    if(node.getParam("target_frame_id", target_frame_id))
+    if(nh_private.getParam("target_frame_id", target_frame_id))
     {
       ROS_INFO("Get target_frame_id parameter: %s", target_frame_id.c_str());
     }
@@ -48,7 +49,7 @@ int main(int argc, char** argv)
     }
 
     // The frame for which we find the tranform to target_frame_id, the original "camera" frame
-    if(node.getParam("source_frame_id", source_frame_id))
+    if(nh_private.getParam("source_frame_id", source_frame_id))
     {
       ROS_INFO("Get source_frame_id parameter: %s", source_frame_id.c_str());
     }
@@ -58,7 +59,7 @@ int main(int argc, char** argv)
     }
 
     // The rate at which we wish to publish final pose data
-    if(node.getParam("output_rate", output_rate))
+    if(nh_private.getParam("output_rate", output_rate))
     {
       ROS_INFO("Get output_rate parameter: %f", output_rate);
     }
@@ -69,7 +70,7 @@ int main(int argc, char** argv)
 
     // The rotation around z axis between original world frame and target world frame, assuming the z axis needs not to be changed
     // In this case, target world frame has y forward, x to the right and z upwards (ENU as ROS dictates)
-    if(node.getParam("gamma_world", gamma_world))
+    if(nh_private.getParam("gamma_world", gamma_world))
     {
       ROS_INFO("Get gamma_world parameter: %f", gamma_world);
     }
@@ -79,7 +80,7 @@ int main(int argc, char** argv)
     }
 
     // The roll angle around camera's own axis to align with body frame 
-    if(node.getParam("roll_cam", roll_cam))
+    if(nh_private.getParam("roll_cam", roll_cam))
     {
       ROS_INFO("Get roll_cam parameter: %f", roll_cam);
     }
@@ -89,7 +90,7 @@ int main(int argc, char** argv)
     }
 
     // The pitch angle around camera's own axis to align with body frame 
-    if(node.getParam("pitch_cam", pitch_cam))
+    if(nh_private.getParam("pitch_cam", pitch_cam))
     {
       ROS_INFO("Get pitch_cam parameter: %f", pitch_cam);
     }
@@ -99,7 +100,7 @@ int main(int argc, char** argv)
     }
 
     // The yaw angle around camera's own axis to align with body frame 
-    if(node.getParam("yaw_cam", yaw_cam))
+    if(nh_private.getParam("yaw_cam", yaw_cam))
     {
       ROS_INFO("Get yaw_cam parameter: %f", yaw_cam);
     }
@@ -120,7 +121,7 @@ int main(int argc, char** argv)
 
   ros::Publisher precland_msg_publisher;
 
-  if(node.getParam("enable_precland", enable_precland))
+  if(nh_private.getParam("enable_precland", enable_precland))
   {
     ROS_INFO("Precision landing: %s", enable_precland ? "enabled" : "disabled");
   }
@@ -132,7 +133,7 @@ int main(int argc, char** argv)
   if (enable_precland)
   {
     // The frame of the landing target in the camera frame
-    if(node.getParam("precland_target_frame_id", precland_target_frame_id))
+    if(nh_private.getParam("precland_target_frame_id", precland_target_frame_id))
     {
       ROS_INFO("Get precland_target_frame_id parameter: %s", precland_target_frame_id.c_str());
     }
@@ -141,7 +142,7 @@ int main(int argc, char** argv)
       ROS_WARN("Using default precland_target_frame_id: %s", precland_target_frame_id.c_str());
     }
 
-    if(node.getParam("precland_camera_frame_id", precland_camera_frame_id))
+    if(nh_private.getParam("precland_camera_frame_id", precland_camera_frame_id))
     {
       ROS_INFO("Get precland_camera_frame_id parameter: %s", precland_camera_frame_id.c_str());
     }
