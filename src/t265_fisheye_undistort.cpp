@@ -58,7 +58,11 @@ void init_rectification_map(string param_file_path)
                 R, T, 
                 R1, R2, P1, P2, 
                 Q,
-                CV_CALIB_ZERO_DISPARITY, 
+#if CV_VERSION_MAJOR == 3
+                CALIB_ZERO_DISPARITY,
+#elif CV_VERSION_MAJOR == 4
+                cv::CALIB_ZERO_DISPARITY,
+#endif
                 alpha, 
                 output_img_size);
  
@@ -138,7 +142,6 @@ void synched_img_callback(const sensor_msgs::ImageConstPtr& msg_left, const sens
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "camera_fisheye_undistort");
-
   ros::NodeHandle nh("~");
 
   string param_file_path;
