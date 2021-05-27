@@ -92,16 +92,18 @@ def set_home_position(mav, pub):
     send_message(msg, mav, pub)
 
 if __name__=="__main__":
+    rospy.init_node("origin_publisher")
+    mavlink_pub = rospy.Publisher("mavlink/to", Mavlink, queue_size=20)
+    
+    # Set up mavlink instance
+    f = fifo()
+    mav = MAV_APM.MAVLink(f, srcSystem=1, srcComponent=1)
+
     try:
-        rospy.init_node("origin_publisher")
-        mavlink_pub = rospy.Publisher("/mavlink/to", Mavlink, queue_size=20)
-
-        # Set up mavlink instance
-        f = fifo()
-        mav = MAV_APM.MAVLink(f, srcSystem=1, srcComponent=1)
-
         # wait to initialize
         while mavlink_pub.get_num_connections() <= 0:
+            rospy.sleep(1)
+            rospy.loginfo("Waiting for mavlink/to connection")
             pass
    
         for _ in range(2):
