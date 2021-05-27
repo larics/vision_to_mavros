@@ -161,8 +161,8 @@ int main(int argc, char **argv)
 
   // The raw stereo images should be published as type sensor_msgs/Image
   image_transport::ImageTransport it(nh);
-  message_filters::Subscriber<sensor_msgs::Image> sub_img_left(nh, "/camera/fisheye1/image_raw", 1);
-  message_filters::Subscriber<sensor_msgs::Image> sub_img_right(nh, "/camera/fisheye2/image_raw", 1);
+  message_filters::Subscriber<sensor_msgs::Image> sub_img_left(nh, "camera/fisheye1/image_raw", 1);
+  message_filters::Subscriber<sensor_msgs::Image> sub_img_right(nh, "camera/fisheye2/image_raw", 1);
   
   // Having time synced stereo images might be important for other purposes, say generating accurate disparity maps. 
   // To sync the left and right image messages by their header time stamps, ApproximateTime is used.
