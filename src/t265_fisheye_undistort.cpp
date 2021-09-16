@@ -158,11 +158,12 @@ int main(int argc, char **argv)
 
   // Read the input parameters and perform initialization
   init_rectification_map(param_file_path);
-
+  
+  ros::NodeHandle nh_public;
   // The raw stereo images should be published as type sensor_msgs/Image
-  image_transport::ImageTransport it(nh);
-  message_filters::Subscriber<sensor_msgs::Image> sub_img_left(nh, "camera/fisheye1/image_raw", 1);
-  message_filters::Subscriber<sensor_msgs::Image> sub_img_right(nh, "camera/fisheye2/image_raw", 1);
+  image_transport::ImageTransport it(nh_public);
+  message_filters::Subscriber<sensor_msgs::Image> sub_img_left(nh_public, "camera/fisheye1/image_raw", 1);
+  message_filters::Subscriber<sensor_msgs::Image> sub_img_right(nh_public, "camera/fisheye2/image_raw", 1);
   
   // Having time synced stereo images might be important for other purposes, say generating accurate disparity maps. 
   // To sync the left and right image messages by their header time stamps, ApproximateTime is used.
@@ -172,11 +173,11 @@ int main(int argc, char **argv)
   sync.registerCallback(boost::bind(&synched_img_callback, _1, _2));
 
   // The output data include rectified images and their corresponding camera info
-  pub_img_rect_left  = it.advertise("/camera/fisheye1/rect/image", 1);
-  pub_img_rect_right = it.advertise("/camera/fisheye2/rect/image", 1);
+  pub_img_rect_left  = it.advertise("camera/fisheye1/rect/image", 1);
+  pub_img_rect_right = it.advertise("camera/fisheye2/rect/image", 1);
 
-  left_camera_info_output_pub  = nh.advertise<sensor_msgs::CameraInfo>("/camera/fisheye1/rect/camera_info", 1);
-  right_camera_info_output_pub = nh.advertise<sensor_msgs::CameraInfo>("/camera/fisheye2/rect/camera_info", 1);
+  left_camera_info_output_pub  = nh.advertise<sensor_msgs::CameraInfo>("camera/fisheye1/rect/camera_info", 1);
+  right_camera_info_output_pub = nh.advertise<sensor_msgs::CameraInfo>("camera/fisheye2/rect/camera_info", 1);
 
   // Processing start
   ros::spin();
